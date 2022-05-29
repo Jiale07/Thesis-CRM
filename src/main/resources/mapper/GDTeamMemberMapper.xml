@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.GDTeamMemberMapper">
+
+    <resultMap id="BaseTeamMemberInfo" type="com.jiale.thesis.entity.StudentInfo">
+        <id property="id" column="Si_id"/>
+        <result property="studentName" column="Si_studentName"/>
+    </resultMap>
+
+    <select id="findTeamMemberListByTeamId" resultMap="BaseTeamMemberInfo">
+        SELECT
+            si.id Si_id,
+            si.student_name Si_studentName
+        FROM
+            student_info si
+        WHERE
+            si.is_deleted = 0
+          AND si.id IN ( SELECT student_id FROM graduation_design_team_member gdtm WHERE gdtm.team_id = #{gdTeamId} )
+    </select>
+</mapper>

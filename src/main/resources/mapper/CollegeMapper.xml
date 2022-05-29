@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.CollegeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jiale.thesis.entity.College">
+        <id property="id" column="College_id" />
+        <result property="name" column="College_collegeName" />
+        <result property="createTime" column="College_create_time" />
+        <result property="updateTime" column="College_update_time" />
+        <result property="isDeleted" column="College_is_deleted" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        username, password
+    </sql>
+
+    <select id="xmlGetCollegeInfo" resultMap="BaseResultMap">
+        select
+        college.id College_id,
+        college.college_name College_collegeName,
+        college.create_time College_create_time,
+        college.update_time College_update_time,
+        college.is_deleted College_is_deleted
+        from college
+    </select>
+
+
+</mapper>

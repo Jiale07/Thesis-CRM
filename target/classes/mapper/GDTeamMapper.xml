@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.GDTeamMapper">
+
+
+    <select id="findGDTeamByTeacherId" resultType="com.jiale.thesis.entity.GD.GDTeam">
+        SELECT
+            *
+        FROM
+            graduation_design_team gdteam
+        WHERE
+            gdteam.teacher_id = #{teacherId}
+            AND gdteam.is_deleted = 0
+    </select>
+</mapper>

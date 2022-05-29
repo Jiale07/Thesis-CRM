@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.SysUserRoleMapper">
+    <resultMap id="BaseUserRoleByUserIdMap" type="com.jiale.thesis.entity.vo.UserRoleVO">
+        <id property="userId" column="SUR_userId"/>
+        <result property="roleId" column="SUR_roleId"/>
+        <result property="roleName" column="SR_roleName"/>
+        <result property="surCreateTime" column="SUR_surCreateTime"/>
+        <result property="surUpdateTime" column="SUR_surUpdateTime"/>
+    </resultMap>
+
+    <select id="findUserRoleByUserId" resultMap="BaseUserRoleByUserIdMap">
+        SELECT
+            sur.user_id SUR_userId,
+            sur.role_id SUR_roleId,
+            sr.role_name SR_roleName,
+            sur.create_time SUR_surCreateTime,
+            sur.update_time SUR_surUpdateTime
+        FROM
+            sys_user_role sur
+            INNER JOIN sys_role sr ON sur.role_id = sr.id
+        WHERE
+            sur.user_id = #{userId}
+            AND  sur.is_deleted = 0
+    </select>
+
+    <select id="VerifyUserHasRoleId" resultType="com.jiale.thesis.entity.SysUserRole">
+        SELECT
+            *
+        FROM
+            sys_user_role sur
+        WHERE
+            sur.user_id = #{userId}
+            AND sur.role_id = #{roleId}
+            AND  sur.is_deleted = 0
+    </select>
+</mapper>

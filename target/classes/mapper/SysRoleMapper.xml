@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.SysRoleMapper">
+
+    <resultMap id="BaseSysRoleMap" type="com.jiale.thesis.entity.SysRole">
+        <id property="id" column="Role_id"/>
+        <result property="roleName" column="Role_roleName"/>
+        <result property="createTime" column="Role_createTime"/>
+        <result property="updateTime" column="Role_updateTime"/>
+        <result property="isDeleted" column="Role_isDeleted"/>
+    </resultMap>
+
+    <resultMap id="BaseFindRolePermission" type="com.jiale.thesis.entity.vo.SysRolePermissionVO">
+        <id property="id" column="roleId"/>
+        <result property="name" column="roleName"/>
+        <result property="createTime" column="role_create_time"/>
+        <result property="updateTime" column="role_update_time"/>
+        <result property="isDeleted" column="role_is_deleted"/>
+        <collection property="sysPermissions" ofType="com.jiale.thesis.entity.SysPermission">
+            <id property="id" column="permission_id"/>
+            <result property="name" column="permission_name"/>
+            <result property="description" column="permission_description"/>
+            <result property="createTime" column="permission_create_time"/>
+            <result property="updateTime" column="permission_update_time"/>
+            <result property="isDeleted" column="permission_is_deleted"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="BaseFindRolePermission2" type="com.jiale.thesis.entity.vo.SysRolePermissionVO2">
+        <id property="id" column="permission_role_id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="permissionId" column="permission_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <collection property="sysPermission" ofType="com.jiale.thesis.entity.SysPermission">
+            <id property="id" column="permission_id"/>
+            <result property="permissionName" column="permission_name"/>
+            <result property="description" column="permission_description"/>
+            <result property="createTime" column="permission_create_time"/>
+            <result property="updateTime" column="permission_update_time"/>
+            <result property="isDeleted" column="permission_is_deleted"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="findRolePermission" resultMap="BaseFindRolePermission">
+        SELECT
+            sr.id roleId,
+               sr.name roleName,
+               sr.create_time role_create_time,
+               sr.update_time role_update_time,
+               sr.is_deleted role_is_deleted,
+            sp.id permission_id,
+               sp.name permission_name,
+               sp.description permission_description,
+               sp.create_time permission_create_time,
+               sp.update_time permission_update_time,
+               sp.is_deleted permission_is_deleted
+        FROM sys_role sr LEFT OUTER JOIN sys_permission_role spr ON sr.id = spr.role_id
+                         LEFT OUTER JOIN sys_permission sp ON	spr.permission_id = sp.id
+        WHERE sr.is_deleted =0 and spr.is_delted=0 and sp.is_deleted=0
+    </select>
+
+    <select id="findRolePermissionByRoleId" resultMap="BaseFindRolePermission2">
+        SELECT
+            spr.id permission_role_id,
+            spr.role_id,
+            spr.permission_id,
+            spr.create_time,
+            spr.update_time,
+            spr.is_deleted,
+            sp.id permission_id,
+            sp.permission_name	permission_name,
+            sp.description permission_description,
+            sp.create_time permission_create_time,
+            sp.update_time permission_update_time,
+            sp.is_deleted permission_is_deleted
+        FROM
+            sys_permission_role spr
+                LEFT OUTER JOIN sys_permission sp ON spr.permission_id = sp.id
+        WHERE
+            spr.is_deleted = 0
+            AND sp.is_deleted = 0
+            <if test="roleId != null and roleId !=''">
+                AND spr.role_id = #{roleId}
+            </if>
+        ORDER BY
+            spr.id
+    </select>
+
+    <select id="fuzzyFindRoleListByIdMatches" resultMap="BaseSysRoleMap">
+        SELECT
+               sys_role.id Role_id,
+               sys_role.role_name Role_roleName,
+               sys_role.create_time Role_createTime,
+               sys_role.update_time Role_updateTime,
+               sys_role.is_deleted Role_isDeleted
+        FROM
+            sys_role
+        WHERE
+            id LIKE #{matches}"%";
+    </select>
+</mapper>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.TeacherInfoMapper">
+    <resultMap id="BaseTeacherInformation" type="com.jiale.thesis.entity.vo.TeacherInformationVO">
+        <id property="id" column="TeacherInfo_id"/>
+        <result property="teacherName" column="TeacherInfo_name"/>
+        <result property="collegeId" column="TeacherInfo_collegeId"/>
+        <result property="roleId" column="SUR_roleId"/>
+        <result property="createTime" column="TeacherInfo_createTime"/>
+        <result property="updateTime" column="TeacherInfo_updateTime"/>
+        <result property="isDeleted" column="TeacherInfo_isDeleted"/>
+    </resultMap>
+
+    <resultMap id="getTeacherByPageMap" type="com.jiale.thesis.entity.vo.TeacherInfoResVO">
+        <id property="id" column="Ti_id"/>
+        <result property="teacherName" column="TI_teacherName"/>
+        <result property="collegeId" column="TI_collegeId"/>
+        <result property="collegeName" column="College_collegeName"/>
+        <result property="password" column="UA_password"/>
+        <result property="createTime" column="TI_createTime"/>
+        <result property="updateTime" column="TI_updateTime"/>
+        <result property="isDeleted" column="TI_isDeleted"/>
+    </resultMap>
+
+
+    <resultMap id="BaseTutorsInformationMap" type="com.jiale.thesis.entity.vo.TutorsInformationVO">
+        <id property="teacherId" column="TI_id"/>
+        <result property="teacherName" column="TI_teacherName"/>
+        <result property="collegeId" column="TI_collegeId"/>
+        <result property="collegeName" column="College_collegeName"/>
+    </resultMap>
+
+    <resultMap id="BaseFindAllTeacherMap" type="com.jiale.thesis.entity.vo.InstructorInfoVO">
+        <id property="teacherId" column="teacher_id"/>
+        <result property="teacherName" column="teacher_name"/>
+        <collection property="gdTopicInfoVoList" ofType="com.jiale.thesis.entity.GD.vo.GDTopicInfoVo">
+            <id property="id" column="topic_id"/>
+            <result property="topicName" column="topic_name"/>
+            <result property="description" column="topic_description"/>
+            <result property="createTime" column="topic_create_time"/>
+            <result property="updateTime" column="topic_update_time"/>
+            <result property="isDeleted" column="topic_is_deleted"/>
+            <result property="optionalNumber" column="TP_optionalNumber"/>
+        </collection>
+    </resultMap>
+
+
+
+
+    <select id="findTeacherInformationByTeacherId" resultMap="BaseTeacherInformation">
+        SELECT
+            ti.id TeacherInfo_id,
+            ti.teacher_name TeacherInfo_name,
+            ti.college_id TeacherInfo_collegeId,
+            ti.create_time TeacherInfo_createTime,
+            ti.update_time TeacherInfo_updateTime,
+            ti.is_deleted TeacherInfo_isDeleted,
+            sur.role_id SUR_roleId
+        FROM
+            teacher_info ti INNER JOIN sys_user_role sur ON ti.id = sur.user_id
+        WHERE
+            ti.id=#{teacherId}
+    </select>
+
+    <select id="findTeacherByPage" resultMap="getTeacherByPageMap">
+        SELECT
+        ti.id Ti_id,
+        ti.teacher_name TI_teacherName,
+        college.college_name College_collegeName,
+        ti.college_id TI_collegeId,
+        ti.create_time TI_createTime,
+        ti.update_time TI_updateTime,
+        ua.`password` UA_password
+        FROM
+        teacher_info ti
+        INNER JOIN user_account ua ON ti.id = ua.id
+        INNER JOIN college On college.id = ti.college_id
+        WHERE
+        ua.is_deleted = 0
+        AND ti.is_deleted = 0
+        AND college.is_deleted = 0
+        <if test="collegeId !=null and collegeId !=''">
+            and ti.college_id = #{collegeId}
+        </if>
+    </select>
+
+    <select id="findTutors" resultMap="BaseTutorsInformationMap">
+        SELECT
+        ti.id TI_id,
+        ti.teacher_name TI_teacherName,
+        ti.college_id TI_collegeId,
+        college.college_name College_collegeName
+        FROM
+        teacher_info ti
+        INNER JOIN sys_user_role sur ON ti.id = sur.user_id
+        INNER JOIN college ON ti.college_id = college.id
+        WHERE
+        ti.is_deleted = 0
+        AND college.is_deleted = 0
+        AND sur.is_deleted = 0
+        <if test="roleId != null and roleId !=''">
+            AND sur.role_id = #{roleId}
+        </if>
+        <if test="collegeId != null and collegeId !=''">
+            AND ti.college_id = #{collegeId}
+        </if>
+        ORDER BY
+        ti.id
+    </select>
+
+    <select id="findNotTheTutor" resultMap="BaseTutorsInformationMap">
+        SELECT
+            ti.id TI_id,
+            ti.teacher_name TI_teacherName,
+            ti.college_id TI_collegeId,
+            college.college_name College_collegeName
+        FROM
+            teacher_info ti
+                INNER JOIN sys_user_role sur ON ti.id = sur.user_id
+                INNER JOIN college ON ti.college_id = college.id
+        WHERE
+            ti.is_deleted = 0
+          AND college.is_deleted = 0
+          AND sur.is_deleted = 0
+          AND sur.user_id NOT IN ( SELECT user_id FROM sys_user_role sur INNER JOIN teacher_info ti ON ti.id = sur.user_id WHERE sur.role_id = 2002 AND sur.is_deleted = 0)
+          AND sur.role_id =2001
+        <if test="collegeId != null and collegeId != ''">
+            AND ti.college_id = #{collegeId}
+        </if>
+        ORDER BY
+            ti.id
+    </select>
+
+    <select id="findAllInstructorInfo" resultMap="BaseFindAllTeacherMap">
+        SELECT
+        ti.id teacher_id,
+        ti.teacher_name	teacher_name,
+        gdt.id topic_id,
+        gdt.topic_name topic_name,
+        gdt.description topic_description,
+        gdt.create_time topic_create_time,
+        gdt.update_time topic_update_time,
+        gdt.is_deleted topic_is_deleted,
+        gdtp.optional_number TP_optionalNumber
+        FROM
+        teacher_info ti
+        INNER JOIN graduation_design_topic_property gdtp ON ti.id = gdtp.creator_id
+        INNER JOIN graduation_design_topic gdt ON gdtp.topic_id = gdt.id
+        WHERE
+        ti.is_deleted = 0
+        AND gdtp.is_deleted = 0
+        AND gdt.is_deleted = 0
+        AND ti.id IN (
+        SELECT
+        ti.id
+        FROM
+        teacher_info ti
+        INNER JOIN sys_user_role sur ON ti.id = sur.user_id
+        WHERE
+        sur.role_id = #{roleId})
+        AND ti.college_id = #{collegeId}
+        <if test="topicCategoryId != null and topicCategoryId != ''">
+            AND gdtp.category_id = #{topicCategoryId}
+        </if>
+    </select>
+
+    <select id="findTeacherBasicInformationVOById" resultType="com.jiale.thesis.entity.vo.TeacherBasicInformationVO">
+        SELECT
+            ti.id teacherId,
+            ti.teacher_name teacherName,
+            college.college_name collegeName
+        FROM
+            teacher_info ti INNER JOIN college ON ti.college_id = college.id
+        WHERE
+            ti.is_deleted = 0
+            AND ti.id = #{teacherId}
+    </select>
+
+</mapper>

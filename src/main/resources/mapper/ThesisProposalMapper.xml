@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.ThesisProposalMapper">
+    <resultMap id="BaseThesisProposalSubmittedTableVOMap" type="com.jiale.thesis.entity.vo.ThesisProposalSubmittedTableVO">
+        <id property="thesisProposalId" column="TP_id" />
+        <result property="studentId" column="SI_studentId" />
+        <result property="studentName" column="SI_studentName" />
+        <result property="thesisName" column="TP_thesisName" />
+        <result property="thesisCategoryName" column="TP_thesisCategoryName" />
+    </resultMap>
+
+    <resultMap id="BaseThesisProposalAuditVO" type="com.jiale.thesis.entity.vo.ThesisProposalAuditVO">
+        <id property="thesisProposalId" column="TP_id" />
+        <result property="studentId" column="SI_studentId" />
+        <result property="studentName" column="SI_studentName" />
+        <result property="collegeName" column="C_collegeName" />
+        <result property="majorName" column="M_collegeName" />
+        <result property="teacherId" column="TI_teacherId" />
+        <result property="teacherName" column="TI_teacherName" />
+        <result property="thesisName" column="TP_thesisName" />
+        <result property="fileId" column="TP_fileId" />
+        <result property="thesisCategoryName" column="GDTC_thesisCategoryName" />
+        <collection property="thesisProposalInputsList" ofType="com.jiale.thesis.entity.ThesisProposal.ThesisProposalInput">
+            <id property="id" column="TPI_id"/>
+            <result property="tpInputSettingId" column="TPI_inputSettingId"/>
+            <result property="inputContent" column="TPI_inputContent"/>
+        </collection>
+    </resultMap>
+
+    <select id="findThesisProposalSubmittedByTeamId" resultMap="BaseThesisProposalSubmittedTableVOMap">
+        SELECT
+            tp.id TP_id,
+            si.id SI_studentId,
+            si.student_name SI_studentName,
+            tp.thesis_name TP_thesisName,
+            gdtc.category_name TP_thesisCategoryName
+        FROM
+            thesis_proposal tp
+                INNER JOIN student_info si ON tp.student_id = si.id
+                INNER JOIN graduation_design_topic_category gdtc ON tp.thesis_category_id = gdtc.id
+        WHERE
+            tp.is_deleted = 0
+            AND tp.student_id IN (
+            SELECT
+                student_id
+            FROM
+                graduation_design_team_member gdtm
+            WHERE
+                gdtm.team_id = #{teamId})
+    </select>
+
+    <select id="findThesisProposalAuditVO" resultMap="BaseThesisProposalAuditVO">
+        SELECT
+            tp.id TP_id,
+            si.id SI_studentId,
+            si.student_name SI_studentName,
+            c.college_name C_collegeName,
+            m.major_name M_collegeName,
+            ti.id TI_teacherId,
+            ti.teacher_name TI_teacherName,
+            tp.thesis_name TP_thesisName,
+            gdtc.category_name GDTC_thesisCategoryName,
+            tpi.id TPI_id,
+            tpi.tp_input_setting_id TPI_inputSettingId,
+            tpi.input_content TPI_inputContent,
+            tp.accessory_file_id TP_fileId
+
+        FROM
+            thesis_proposal tp
+                INNER JOIN student_info si ON tp.student_id = si.id
+                INNER JOIN graduation_design_topic_category gdtc ON tp.thesis_category_id = gdtc.id
+                INNER JOIN college c ON si.college_id = c.id
+                INNER JOIN major m ON si.major_id = m.id
+                INNER JOIN graduation_design_team_member gdTeamMember ON si.id = gdTeamMember.student_id
+                INNER JOIN graduation_design_team gdTeam ON gdTeamMember.team_id = gdTeam.id
+                INNER JOIN teacher_info ti ON gdTeam.teacher_id = ti.id
+                INNER JOIN thesis_proposal_input tpi ON tpi.thesis_proposal_id = tp.id
+        WHERE
+            tp.is_deleted = 0
+            AND tp.id = #{thesisProposalId}
+    </select>
+
+
+<!--    Graduation project supervisor has approved the opening report-->
+    <select id="findThesisProposalApproveByInstructorId" resultType="com.jiale.thesis.entity.vo.ThesisProposalApproveByInstructorVO">
+        SELECT
+            tp.id thesisProposalId,
+            tp.thesis_name,
+            tp.student_id,
+            si.student_name
+        FROM
+            thesis_proposal tp
+                INNER JOIN thesis_proposal_audit_input tpai ON tp.id = tpai.tp_id
+                INNER JOIN audit_status_category auditsc ON tpai.audit_status_id = auditsc.id
+                INNER JOIN thesis_proposal_audit_input_setting tpais ON tpai.tpai_setting_id = tpais.id
+                INNER JOIN student_info si ON tp.student_id = si.id
+        WHERE
+            tp.is_deleted = 0
+          AND auditsc.audit_status_value = 1
+          AND tpais.role_id = 2002
+          AND tp.student_id IN ( SELECT student_id FROM student_info si INNER JOIN department_head dh ON si.major_id = dh.major_id WHERE dh.teacher_id = #{teacherId} )
+          AND tp.id NOT IN (
+            SELECT
+                tp.id
+            FROM
+                thesis_proposal tp
+                    INNER JOIN thesis_proposal_audit_input tpai ON tp.id = tpai.tp_id
+                    INNER JOIN audit_status_category auditsc ON tpai.audit_status_id = auditsc.id
+                    INNER JOIN thesis_proposal_audit_input_setting tpais ON tpai.tpai_setting_id = tpais.id
+            WHERE
+                tpais.role_id=2004
+            )
+        ORDER BY
+            tpai.update_time desc
+    </select>
+</mapper>

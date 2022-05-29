@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.GDThesisInputMapper">
+    <select id="findGDThesisInputList" resultType="com.jiale.thesis.entity.GD.GDThesisInput">
+        SELECT
+            gdti.*
+        FROM
+            graduation_design_topic_final gdtf
+                INNER JOIN graduation_design_thesis gdthesis ON gdtf.id = gdthesis.topic_final_id
+                INNER JOIN graduation_design_thesis_input gdti ON gdthesis.id = gdti.gdthesis_id
+        WHERE
+            gdtf.student_id = #{studentId}
+            AND gdthesis.is_deleted = 0
+    </select>
+
+    <select id="findGDThesisInputListByGDThesisId" resultType="com.jiale.thesis.entity.GD.GDThesisInput">
+        SELECT
+            gdti.*
+        FROM
+            graduation_design_thesis_input gdti
+        WHERE
+            gdti.gdthesis_id = #{gdThesisId}
+            AND gdti.is_deleted = 0
+    </select>
+</mapper>

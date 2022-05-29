@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.AnnouncementMapper">
+    <resultMap id="BaseAnnouncementMap" type="com.jiale.thesis.entity.Announcement.Announcement">
+        <id property="id" column="Announcement_id"/>
+        <result property="creatorId" column="Announcement_creatorId"/>
+        <result property="categoryId" column="Announcement_categoryId"/>
+        <result property="announcementName" column="Announcement_announcementName"/>
+        <result property="announcementContent" column="Announcement_announcementContent"/>
+        <result property="createTime" column="Announcement_createTime"/>
+        <result property="updateTime" column="Announcement_updateTime"/>
+
+
+    </resultMap>
+    <select id="findAnnouncementByRoleArray" resultMap="BaseAnnouncementMap">
+        SELECT
+            a.id Announcement_id,
+            a.creator_id Announcement_creatorId,
+            a.category_id Announcement_categoryId,
+            a.announcement_name Announcement_announcementName,
+            a.announcement_content Announcement_announcementContent,
+            a.create_time Announcement_createTime,
+            a.update_time Announcement_updateTime
+        FROM
+            announcement a
+        WHERE
+            a.is_deleted = 0
+          AND a.id IN (
+              SELECT announcement_id 
+              FROM announcement_visible av 
+              WHERE
+                    av.is_deleted = 0
+            <foreach collection="roleArray" open="AND (" close=")" item="id" separator="OR">
+                av.role_id = #{id}
+            </foreach>
+            )
+        Order by a.create_time DESC
+        LIMIT #{number}
+
+
+    </select>
+</mapper>

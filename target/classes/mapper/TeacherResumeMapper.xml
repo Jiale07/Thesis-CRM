@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.TeacherResumeMapper">
+    <resultMap id="BaseTeacherResumeVO" type="com.jiale.thesis.entity.vo.TeacherResumeVO">
+        <id property="teacherId" column="Ti_teacherId"/>
+        <result property="teacherName" column="Ti_teacherName"/>
+        <result property="collegeName" column="C_collegeName"/>
+        <association property="teacherResume" javaType="com.jiale.thesis.entity.TeacherResume">
+            <id property="id" column="TR_id"/>
+            <result property="teacherId" column="TR_teacherId"/>
+            <result property="phone" column="TR_phone"/>
+            <result property="email" column="TR_email"/>
+            <result property="birthdate" column="TR_birthdate"/>
+            <result property="politicsStatus" column="TR_politicsStatus"/>
+            <result property="education" column="TR_education"/>
+            <result property="birthplace" column="TR_birthplace"/>
+            <result property="graduateSchool" column="TR_graduateSchool"/>
+            <result property="graduateMajor" column="TR_graduateMajor"/>
+            <result property="researchDirection" column="TR_researchDirection"/>
+            <result property="workExperience" column="TR_workExperience"/>
+            <result property="educationBackground" column="TR_educationBackground"/>
+            <result property="other" column="TR_other"/>
+            <result property="imageUrl" column="TR_imageUrl"/>
+            <result property="createTime" column="TR_createTime"/>
+            <result property="updateTime" column="TR_updateTime"/>
+        </association>
+    </resultMap>
+
+
+<!--    通过教师id获取教师的个人简介信息-->
+    <select id="findTeacherResumeVO" resultMap="BaseTeacherResumeVO">
+        SELECT
+            ti.id Ti_teacherId,
+            ti.teacher_name Ti_teacherName,
+            college.college_name C_collegeName,
+            tr.id TR_id,
+            tr.teacher_id TR_teacherId,
+            tr.phone TR_phone,
+            tr.email TR_email,
+            tr.birthdate TR_birthdate,
+            tr.politics_status TR_politicsStatus,
+            tr.education TR_education,
+            tr.birthplace TR_birthplace,
+            tr.graduate_school TR_graduateSchool,
+            tr.graduate_major TR_graduateMajor,
+            tr.research_direction TR_researchDirection,
+            tr.work_experience TR_workExperience,
+            tr.education_background TR_educationBackground,
+            tr.other TR_other,
+            tr.image_url TR_imageUrl,
+            tr.create_time TR_createTime,
+            tr.update_time TR_updateTime
+        From
+            teacher_info ti
+                INNER JOIN college ON ti.college_id = college.id
+                LEFT JOIN teacher_resume tr ON ti.id = tr.teacher_id
+        WHERE
+            ti.id = #{teacherId}
+            AND ti.is_deleted = 0
+            AND tr.is_deleted = 0
+    </select>
+</mapper>

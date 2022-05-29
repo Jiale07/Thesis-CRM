@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.AnnouncementVisibleMapper">
+    <resultMap id="BaseFindAVAndRoleInfoMap" type="com.jiale.thesis.entity.SysRole">
+        <id property="id" column="Role_id"/>
+        <result property="roleName" column="Role_roleName"/>
+    </resultMap>
+
+    <select id="findAVAndRoleInfo" resultMap="BaseFindAVAndRoleInfoMap">
+        SELECT
+            sr.id Role_id,
+            sr.role_name Role_roleName
+        FROM
+            announcement_visible av INNER JOIN sys_role sr ON av.role_id = sr.id
+        WHERE
+            av.is_deleted = 0
+            AND av.announcement_id = #{announcementId}
+    </select>
+</mapper>

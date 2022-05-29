@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.GDThesisAuditRecordMapper">
+
+    <select id="findThesisAuditResultVOByGDThesisId" resultType="com.jiale.thesis.entity.GD.vo.ThesisAuditResultVO">
+        SELECT
+            ti.id teacherId,
+            ti.teacher_name teacherName,
+            gdtar.content content,
+            asCategory.audit_status_name auditStatusName
+        FROM
+            graduation_design_thesis_audit_record gdtar
+            INNER JOIN teacher_info ti ON gdtar.teacher_id = ti.id
+            INNER JOIN audit_status_category asCategory ON gdtar.audit_status_id = asCategory.id
+        WHERE
+            gdtar.is_deleted = 0
+            AND gdtar.gdthesis_id = #{gdThesisId}
+    </select>
+</mapper>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.GDTopicMapper">
+    <resultMap id="BaseTopicResultMap" type="com.jiale.thesis.entity.GD.GDTopic">
+        <id property="id" column="topic_id"/>
+        <result property="topicName" column="topic_name"/>
+        <result property="description" column="topic_description"/>
+        <result property="createTime" column="topic_create_time"/>
+        <result property="updateTime" column="topic_update_time"/>
+        <result property="isDeleted" column="topic_is_deleted"/>
+    </resultMap>
+
+    <resultMap id="BaseTopicInfoResultMap" type="com.jiale.thesis.entity.GD.vo.GDTopicInfoVo">
+        <id property="id" column="topic_id"/>
+        <result property="topicName" column="topic_name"/>
+        <result property="description" column="topic_description"/>
+        <result property="createTime" column="topic_create_time"/>
+        <result property="updateTime" column="topic_update_time"/>
+        <result property="isDeleted" column="topic_is_deleted"/>
+        <association property="gdTopicProperty" javaType="com.jiale.thesis.entity.GD.GDTopicProperty">
+            <result property="id" column="TP_Id"/>
+            <result property="topicId" column="TP_topic_id"/>
+            <result property="creatorId" column="TP_creator_id"/>
+            <result property="optionalNumber" column="TP_optionalNumber"/>
+            <result property="categoryId" column="TP_category_Id"/>
+            <result property="createTime" column="TP_create_time"/>
+            <result property="updateTime" column="TP_update_time"/>
+            <result property="isDeleted" column="TP_is_deleted"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="BaseTopicAndTutorMap" type="com.jiale.thesis.entity.GD.vo.TopicAndTutorVO">
+        <id property="teacherId" column="Ti_teacherId"/>
+        <result property="teacherName" column="Ti_teacherName"/>
+        <result property="collegeName" column="C_collegeName"/>
+        <result property="topicId" column="GDT_topicId"/>
+        <result property="topicName" column="GDT_topicName"/>
+        <result property="topicDescription" column="GDT_topicDescription"/>
+        <result property="categoryName" column="GDTP_categoryName"/>
+        <result property="optionalNumber" column="GDTP_optionalNumber"/>
+    </resultMap>
+
+
+    <resultMap id="BaseTopicDetailMap" type="com.jiale.thesis.entity.GD.vo.TopicDetailVO">
+        <id property="topicId" column="GDT_topicId"/>
+        <result property="topicName" column="GDT_topicName"/>
+        <result property="topicDescription" column="GDT_topicDescription"/>
+        <result property="topicCreateTime" column="GDT_topicCreateTime"/>
+        <result property="topicUpdateTime" column="GDT_topicUpdateTime"/>
+        <result property="categoryId" column="GDTC_categoryId"/>
+        <result property="categoryName" column="GDTC_categoryName"/>
+        <result property="topicPropertyId" column="GDTP_id"/>
+        <result property="optionalNumber" column="GDTP_optionalNumber"/>
+        <result property="teacherId" column="TI_teacherId"/>
+        <result property="teacherName" column="TI_teacherName"/>
+    </resultMap>
+
+    <select id="findTopicInfoByTopicId" resultMap="BaseTopicInfoResultMap">
+        SELECT
+        t.id topic_id,
+        t.topic_name topic_name,
+        t.description topic_description,
+        t.create_time topic_create_time,
+        t.update_time topic_update_time,
+        t.is_deleted topic_is_deleted,
+        tp.id TP_Id,
+        tp.topic_id TP_topic_id,
+        tp.creator_id TP_creator_id,
+        tp.optional_number TP_optionalNumber,
+        tp.category_id TP_category_Id,
+        tp.create_time TP_create_time,
+        tp.update_time TP_update_time,
+        tp.is_deleted TP_is_deleted
+        FROM
+        graduation_design_topic t,
+        graduation_design_topic_property tp
+        WHERE
+            t.id = tp.topic_id
+            AND t.is_deleted = 0
+            AND tp.is_deleted = 0
+        <if test="topicId !=null and topicId !=''">
+            AND t.id = #{topicId}
+        </if>
+
+    </select>
+
+<!--    通过教师id获取对应创建的题目列表-->
+    <select id="findTopicByCreatorId" resultMap="BaseTopicResultMap">
+        SELECT
+            t.id topic_id,
+            t.topic_name topic_name,
+            t.description topic_description,
+            t.create_time topic_create_time,
+            t.update_time topic_update_time,
+            t.is_deleted topic_is_deleted
+        FROM
+            graduation_design_topic t,
+            graduation_design_topic_property tp
+        WHERE
+            t.id = tp.topic_id
+            AND tp.creator_id = #{teacherId}
+    </select>
+
+<!--    师生双向选择中学生选题-->
+    <select id="findTopicAndTutorPage" resultMap="BaseTopicAndTutorMap">
+        SELECT
+            ti.id Ti_teacherId,
+            ti.teacher_name Ti_teacherName,
+            c.college_name C_collegeName,
+            gdt.id GDT_topicId,
+            gdt.topic_name GDT_topicName,
+            gdt.description GDT_topicDescription,
+            gdtc.category_name GDTP_categoryName,
+            gdtp.optional_number GDTP_optionalNumber
+        FROM
+            teacher_info ti
+                INNER JOIN graduation_design_topic_property gdtp ON ti.id = gdtp.creator_id
+                INNER JOIN graduation_design_topic gdt ON gdtp.topic_id = gdt.id
+                INNER JOIN graduation_design_topic_category gdtc ON gdtp.category_id = gdtc.id
+                INNER JOIN college c ON	ti.college_id = c.id
+        WHERE
+            ti.is_deleted = 0
+            AND gdtp.is_deleted = 0
+            AND gdt.is_deleted = 0
+            AND gdtc.is_deleted = 0
+        <if test="teacherName!=null and teacherName!=''">
+            AND ti.teacher_name LIKE "%" #{teacherName}"%"
+        </if>
+        <if test="collegeId!=null and collegeId!=''">
+            AND ti.college_id = #{collegeId}
+        </if>
+        <if test="categoryId!=null and categoryId!=''">
+            AND gdtp.category_id = #{categoryId}
+        </if>
+        <if test="topicName!=null and topicName!=''">
+            AND gdt.topic_name LIKE "%" #{topicName} "%"
+        </if>
+        ORDER BY ti.id
+    </select>
+<!--    获取指定教师创建的题目列表，分页形式-->
+    <select id="findTopicPageByTeacherId" resultMap="BaseTopicResultMap">
+        SELECT
+            gdt.id topic_id,
+            gdt.topic_name topic_name,
+            gdt.description topic_description,
+            gdt.create_time topic_create_time,
+            gdt.update_time topic_update_time
+        FROM
+            graduation_design_topic_property gdtp
+                INNER JOIN graduation_design_topic gdt ON gdtp.topic_id = gdt.id
+        WHERE
+            gdtp.is_deleted = 0
+          AND gdt.is_deleted = 0
+          AND gdtp.creator_id = #{teacherId}
+    </select>
+<!--    题目详细信息-->
+    <select id="findTopicDetail" resultMap="BaseTopicDetailMap">
+        SELECT
+            gdt.id GDT_topicId,
+            gdt.topic_name GDT_topicName,
+            gdt.description GDT_topicDescription,
+            gdt.create_time GDT_topicCreateTime,
+            gdt.update_time GDT_topicUpdateTime,
+            gdtc.id GDTC_categoryId,
+            gdtc.category_name GDTC_categoryName,
+            gdtp.id GDTP_id,
+            gdtp.optional_number GDTP_optionalNumber,
+            ti.id TI_teacherId,
+            ti.teacher_name TI_teacherName
+        FROM
+            graduation_design_topic_property gdtp
+                INNER JOIN graduation_design_topic gdt ON gdtp.topic_id = gdt.id
+                INNER JOIN graduation_design_topic_category gdtc ON gdtp.category_id = gdtc.id
+                INNER JOIN teacher_info ti ON gdtp.creator_id = ti.id
+        WHERE
+            gdtp.topic_id = #{topidId}
+    </select>
+</mapper>

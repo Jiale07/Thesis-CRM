@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.MajorMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jiale.thesis.entity.Major">
+        <id property="id" column="Major_id" />
+        <result property="collegeId" column="Major_collegeId" />
+        <result property="majorName" column="Major_majorName" />
+        <result property="createTime" column="Major_createTime" />
+        <result property="updateTime" column="Major_updateTime" />
+        <result property="isDeleted" column="Major_isDeleted" />
+    </resultMap>
+
+    <resultMap id="BaseMajorInfoResVOMap" type="com.jiale.thesis.entity.vo.MajorInfoResVO">
+        <id property="id" column="Major_id"/>
+        <result property="majorName" column="Major_majorName" />
+        <result property="collegeId" column="Major_collegeId" />
+        <result property="collegeName" column="College_collegeName"/>
+        <result property="createTime" column="Major_createTime" />
+        <result property="updateTime" column="Major_updateTime" />
+        <result property="isDeleted" column="Major_isDeleted" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        username, password
+    </sql>
+
+    <select id="selectPageVo" resultMap="BaseResultMap">
+        SELECT id Major_id,
+               major.majorName Major_collegeId
+        FROM
+             user
+        WHERE
+              state=#{state}
+    </select>
+
+    <select id="findMajorInfoResVOPageByCollegeId" resultMap="BaseMajorInfoResVOMap">
+        SELECT
+                major.id Major_id,
+                major.major_name Major_majorName,
+                major.college_id Major_collegeId,
+                college.college_name College_collegeName,
+                major.create_time Major_createTime,
+                major.update_time Major_updateTime,
+                major.is_deleted Major_isDeleted
+        FROM
+            major LEFT JOIN college ON major.college_id = college.id
+        WHERE
+            major.is_deleted = 0
+            <if test="collegeId!=null and collegeId!=''">
+                AND major.college_id = #{collegeId}
+            </if>
+    </select>
+
+    <update id="updateMajorId" >
+        update
+            major
+        set
+        <if test="newId !=null and newId !=''">
+            id = #{newId},
+        </if>
+        <if test="majorName !=null and majorName!=''">
+            major_name = #{majorName},
+        </if>
+        <if test="collegeId !=null and collegeId!=''">
+            college_id = #{collegeId}
+        </if>
+        where
+            major.id = #{oldId}
+    </update>
+
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.SysPermissionMapper">
+    <resultMap id="BaseFindPermissionMap" type="com.jiale.thesis.entity.SysPermission">
+        <id property="id" column="permission_id"/>
+        <result property="permissionName" column="permission_name"/>
+        <result property="description" column="permission_description"/>
+        <result property="createTime" column="permission_create_time" />
+        <result property="updateTime" column="permission_update_time" />
+        <result property="isDeleted" column="permission_is_deleted" />
+    </resultMap>
+
+    <sql id="findPermissionSection">
+
+    </sql>
+
+    <select id="findPermissionByRoleId" resultMap="BaseFindPermissionMap">
+        SELECT
+            sp.id permission_id,
+            sp.name permission_name,
+            sp.description permission_description,
+            sp.create_time permission_create_time,
+            sp.update_time permission_update_time,
+            sp.is_deleted permission_is_deleted
+        FROM sys_permission_role spr LEFT JOIN  sys_permission sp ON spr.permission_id = sp.id
+        WHERE sp.is_deleted = 0 and spr.is_deleted = 0
+        <if test="roleId != null and roleId !=''">
+            and spr.role_id = #{roleId}
+        </if>
+
+    </select>
+
+    <select id="findOnePermission" resultMap="BaseFindPermissionMap">
+        SELECT
+            sp.id permission_id,
+            sp.permission_name permission_name,
+            sp.description permission_description,
+            sp.create_time permission_create_time,
+            sp.update_time permission_update_time,
+            sp.is_deleted permission_is_deleted
+        FROM
+            sys_permission sp
+        ORDER BY
+            id DESC
+            LIMIT 1
+    </select>
+</mapper>

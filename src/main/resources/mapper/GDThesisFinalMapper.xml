@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.GDThesisFinalMapper">
+    <select id="findThesisFinalSubmitTheRecordVOByStudentId" resultType="com.jiale.thesis.entity.GD.vo.ThesisFinalSubmitTheRecordVO">
+        SELECT
+            gdthesisfinal.id thesisId,
+            fi.id fileId,
+            fi.file_name_old fileName,
+            fi.file_type fileType,
+            gdthesisfinal.create_time submitTime
+        FROM
+            graduation_design_thesis_final gdthesisfinal
+                INNER JOIN graduation_design_topic_final gdtf ON gdthesisfinal.topic_final_id = gdtf.id
+                LEFT JOIN file_info fi ON gdthesisfinal.accessory_file_id = fi.id
+                LEFT JOIN graduation_design_thesis_audit_record gdtar ON gdthesisfinal.id = gdtar.gdthesis_id
+        WHERE
+            gdthesisfinal.is_deleted = 0
+          AND gdtf.student_id = #{studentId}
+    </select>
+
+    <select id="findThesisTableViewVOByGDTeam" resultType="com.jiale.thesis.entity.GD.vo.ThesisTableViewVO">
+        SELECT
+            gdtopicfinal.id thesisTopicId,
+            gdtopicfinal.thesis_topic_name thesisTopicName,
+            gdtc.category_name thesisTopicCategory,
+            si.id studentId,
+            si.student_name studentName
+        FROM
+            graduation_design_thesis_final gdthesisfinal
+                INNER JOIN graduation_design_topic_final gdtopicfinal ON gdthesisfinal.topic_final_id = gdtopicfinal.id
+                INNER JOIN graduation_design_topic_category gdtc ON gdtopicfinal.topic_category_id = gdtc.id
+                INNER JOIN student_info si ON si.id = gdtopicfinal.student_id
+        WHERE
+            gdthesisfinal.is_deleted = 0
+          AND gdtopicfinal.student_id IN (
+            SELECT
+                gdtm.student_id
+            FROM
+                graduation_design_team gdteam
+                    INNER JOIN graduation_design_team_member gdtm ON gdteam.id = gdtm.team_id
+            WHERE
+                gdteam.id = #{GDTeamId})
+    </select>
+</mapper>

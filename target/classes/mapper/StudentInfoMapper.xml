@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.StudentInfoMapper">
+    <resultMap id="BaseStudentInformation" type="com.jiale.thesis.entity.vo.StudentInformationVO">
+        <id property="id" column="SI_id"/>
+        <result property="studentName" column="SI_studentName"/>
+        <result property="collegeId" column="SI_collegeId"/>
+        <result property="majorId" column="SI_majorId"/>
+        <result property="classId" column="SI_classId"/>
+        <result property="roleId" column="SUR_roleId"/>
+        <result property="password" column="UA_password"/>
+        <result property="createTime" column="SI_createTime"/>
+        <result property="updateTime" column="SI_updateTime"/>
+        <result property="isDeleted" column="SI_isDeleted"/>
+    </resultMap>
+
+    <resultMap id="getStudentByPageMap" type="com.jiale.thesis.entity.vo.StudentInfoResVO">
+        <id property="id" column="UA_id"/>
+        <result property="password" column="UA_password"/>
+        <result property="CreateTime" column="UA_createTime"/>
+        <result property="UpdateTime" column="UA_updateTime"/>
+        <result property="studentName" column="SI_studentName"/>
+        <result property="collegeId" column="SI_collegeId"/>
+        <result property="collegeName" column="College_collegeName"/>
+        <result property="majorId" column="SI_majorId"/>
+        <result property="majorName" column="Major_majorName"/>
+        <result property="classId" column="SI_classId"/>
+    </resultMap>
+    <select id="findStudentInformationByStudentId" resultMap="BaseStudentInformation">
+        SELECT
+            si.id SI_id,
+            si.student_name SI_studentName,
+            si.college_id SI_collegeId,
+            si.major_id SI_majorId,
+            si.class_id SI_classId,
+            sur.role_id SUR_roleId,
+            ua.password UA_password,
+            si.create_time SI_createTime,
+            si.update_time SI_updateTime,
+            si.is_deleted SI_isDeleted
+        FROM
+            student_info si
+            INNER JOIN sys_user_role sur ON si.id = sur.user_id
+            INNER JOIN user_account ua ON si.id = ua.id
+        WHERE
+            si.id=#{studentId}
+    </select>
+
+
+    <select id="findStudentByPage" resultMap="getStudentByPageMap">
+        SELECT
+        ua.id UA_id,
+        ua.`password` UA_password,
+        ua.create_time UA_createTime,
+        ua.update_time UA_updateTime,
+        si.student_name SI_studentName,
+        si.college_id SI_collegeId,
+        college.college_name College_collegeName,
+        si.major_id SI_majorId,
+        major.major_name Major_majorName,
+        si.class_id SI_classId
+        FROM
+        student_info si INNER JOIN
+        user_account ua ON si.id = ua.id INNER JOIN
+        college ON si.college_id = college.id
+        INNER JOIN
+        major ON si.major_id = major.id
+        WHERE
+        si.is_deleted = 0
+        and ua.is_deleted = 0
+        <if test="collegeId != null and collegeId !=''">
+            and si.college_id = #{collegeId}
+        </if>
+        <if test="majorId != null and majorId !=''">
+            and si.major_id = #{majorId}
+        </if>
+        <if test="classId != null and classId !=''">
+            and si.class_id = #{classId}
+        </if>
+    </select>
+
+    <select id="findStudentBasicInformationVOById" resultType="com.jiale.thesis.entity.vo.StudentBasicInformationVO">
+        SELECT
+            si.id studentId,
+            si.student_name studentName,
+            college.college_name collegeName,
+            major.major_name majorName,
+            si.class_id classId
+        FROM
+            student_info si INNER JOIN college ON si.college_id = college.id
+            INNER JOIN major ON si.major_id = major.id
+        WHERE
+            si.is_deleted = 0
+            AND si.id = #{studentId}
+    </select>
+</mapper>

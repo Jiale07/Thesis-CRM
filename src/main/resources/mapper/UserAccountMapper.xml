@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.UserAccountMapper">
+    <resultMap id="BaseUserAccount" type="com.jiale.thesis.entity.UserAccount">
+        <id property="id" column="user_id"/>
+        <result property="password" column="user_password"/>
+        <result property="createTime" column="user_create_time"/>
+        <result property="updateTime" column="user_update_time"/>
+        <result property="isDeleted" column="user_id_deleted"/>
+    </resultMap>
+
+    <resultMap id="BaseFindUserInfoResVOMap" type="com.jiale.thesis.entity.vo.LoginUserInfoResVO">
+        <id property="userId" column="UA_id"/>
+        <collection property="roleIdList" ofType="INTEGER" javaType="arraylist">
+            <constructor>
+                <arg column="SUR_roleId"/>
+            </constructor>
+        </collection>
+    </resultMap>
+
+
+    <select id="findLoginUserInfoResVo" resultMap="BaseFindUserInfoResVOMap">
+        SELECT
+            ua.id UA_id,
+            sur.role_id SUR_roleId
+        FROM
+            user_account ua
+                INNER JOIN sys_user_role sur ON ua.id = sur.user_id
+        WHERE
+            ua.id = #{userId}
+    </select>
+</mapper>

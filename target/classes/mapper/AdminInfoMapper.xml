@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.AdminInfoMapper">
+<!--    <resultMap id="BaseAdminInformation" type="com.jiale.thesis.entity.vo.AdminInformationVO">-->
+<!--        <id property="id" column="AdminInfo_id"/>-->
+<!--        <result property="name" column="AdminInfo_name"/>-->
+<!--        <result property="createTime" column="AdminInfo_createTime"/>-->
+<!--        <result property="updateTime" column="AdminInfo_updateTime"/>-->
+<!--        <result property="isDeleted" column="AdminInfo_isDeleted"/>-->
+<!--        <association property="sysUserRole" javaType="com.jiale.thesis.entity.SysUserRole">-->
+<!--            <id property="id" column="SUR_id"/>-->
+<!--            <result property="userId" column="SUR_userId"/>-->
+<!--            <result property="roleId" column="SUR_roleId"/>-->
+<!--            <result property="createTime" column="SUR_createTime"/>-->
+<!--            <result property="updateTime" column="SUR_updateTime"/>-->
+<!--            <result property="isDeleted" column="SUR_isDeleted"/>-->
+<!--        </association>-->
+<!--    </resultMap>-->
+
+    <resultMap id="BaseAdminInformation" type="com.jiale.thesis.entity.vo.AdminInformationVO">
+        <id property="id" column="AdminInfo_id"/>
+        <result property="adminName" column="AdminInfo_name"/>
+        <result property="roleId" column="SUR_roleId"/>
+        <result property="createTime" column="AdminInfo_createTime"/>
+        <result property="updateTime" column="AdminInfo_updateTime"/>
+        <result property="isDeleted" column="AdminInfo_isDeleted"/>
+    </resultMap>
+
+<!--    sql-->
+    <sql id="SQL_AdminInformation">
+
+    </sql>
+
+    <select id="findAdminInformation" resultMap="BaseAdminInformation">
+        SELECT
+            ai.id AdminInfo_id,
+            ai.admin_name AdminInfo_name,
+            ai.create_time AdminInfo_createTime,
+            ai.update_time AdminInfo_updateTime,
+            ai.is_deleted AdminInfo_isDeleted,
+            sur.role_id SUR_roleId
+        FROM
+            admin_info ai INNER JOIN sys_user_role sur ON ai.id = sur.user_id
+        WHERE
+            ai.id=#{adminId}
+    </select>
+</mapper>

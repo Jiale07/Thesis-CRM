@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.GDTopicSelectionMapper">
+    <resultMap id="BaseFindSelectionResultMap" type="com.jiale.thesis.entity.vo.SelectionResultVo">
+        <id property="topicId" column="GDTS_topicId"/>
+        <result property="topicName" column="GDT_topicName"/>
+        <result property="description" column="GDT_description"/>
+        <result property="creatorId" column="GDTP_creatorId"/>
+        <result property="teacherName" column="TI_teacherName"/>
+        <result property="categoryName" column="GDTC_categoryName"/>
+        <result property="GDTSCreateTime" column="GDTS_createTime"/>
+        <result property="GDTSUpdateTime" column="GDTS_updateTime"/>
+        <result property="isPassed" column="GDTS_isPassed"/>
+    </resultMap>
+
+    <resultMap id="BaseTeacherTopicSelected" type="com.jiale.thesis.entity.GD.vo.TeacherTopicSelectedVO">
+        <id property="gdtsId" column="GDTS_id"/>
+        <result property="topicId" column="GDT_topicId"/>
+        <result property="topicName" column="GDT_topicName"/>
+        <result property="optionalNumber" column="GDTP_optionalNumber"/>
+        <result property="selectionCreateTime" column="GDTP_createTime"/>
+        <result property="selectionUpdateTime" column="GDTP_updateTime"/>
+        <result property="studentId" column="SI_studentId"/>
+        <result property="studentName" column="SI_studentName"/>
+        <result property="collegeName" column="C_collegeName"/>
+        <result property="majorName" column="M_majorName"/>
+        <result property="classes" column="SI_classesId"/>
+    </resultMap>
+
+    <select id="findSelectionResult" resultMap="BaseFindSelectionResultMap">
+        SELECT
+            gdts.topic_id GDTS_topicId,
+            gdts.create_time GDTS_createTime,
+            gdts.update_time GDTS_updateTime,
+            gdts.is_passed GDTS_isPassed,
+            gdt.topic_name GDT_topicName,
+            gdt.description GDT_description,
+            gdtp.creator_id GDTP_creatorId,
+            ti.teacher_name TI_teacherName,
+            gdtc.category_name GDTC_categoryName
+        FROM
+            graduation_design_topic_selection gdts
+                INNER JOIN graduation_design_topic gdt ON gdts.topic_id = gdt.id
+                INNER JOIN graduation_design_topic_property gdtp ON gdt.id = gdtp.topic_id
+                INNER JOIN graduation_design_topic_category gdtc ON gdtp.category_id = gdtc.id
+                INNER JOIN teacher_info ti ON gdtp.creator_id = ti.id
+        WHERE
+            gdt.is_deleted = 0
+          AND gdtc.is_deleted = 0
+          AND gdtp.is_deleted = 0
+          AND ti.is_deleted = 0
+          AND gdts.is_deleted = 0
+          AND gdts.student_id = #{studentId}
+    </select>
+    
+    <select id="findTeacherTopicSelected" resultMap="BaseTeacherTopicSelected">
+        SELECT
+            gdts.id GDTS_id,
+            gdt.id GDT_topicId,
+            gdt.topic_name GDT_topicName,
+            gdtp.optional_number GDTP_optionalNumber,
+            gdtp.create_time GDTP_createTime,
+            gdtp.update_time GDTP_updateTime,
+            si.id SI_studentId,
+            si.student_name SI_studentName,
+            c.college_name C_collegeName,
+            m.major_name M_majorName,
+            si.class_id SI_classesId
+        FROM
+            graduation_design_topic_property gdtp
+            INNER JOIN graduation_design_topic_selection gdts ON gdtp.topic_id = gdts.topic_id
+            INNER JOIN graduation_design_topic gdt ON gdtp.topic_id = gdt.id
+            INNER JOIN student_info si ON gdts.student_id = si.id
+            INNER JOIN college c ON c.id = si.college_id
+            INNER JOIN major m ON m.id = si.major_id
+        WHERE
+            gdts.is_deleted = 0
+            AND gdtp.is_deleted = 0
+            AND gdt.is_deleted = 0
+            AND si.is_deleted = 0
+            AND gdts.is_passed = 0
+            AND gdtp.creator_id  = #{teacherId}
+    </select>
+</mapper>

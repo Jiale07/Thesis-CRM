@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.UserAccountMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.jiale.thesis.entity.UserAccount">
+        <id property="id" column="id" />
+        <result property="password" column="password" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <result property="isDeleted" column="is_deleted" />
+    </resultMap>
+
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        username, password
+    </sql>
+
+    <select id="findAllStudentInfoList" resultMap="BaseResultMap">
+        SELECT * FROM student_info si
+        WHERE si.is_deleted = ${isNumber} and  si.id
+        in(SELECT id FROM user_account ua WHERE ua.is_deleted = ${isNumber})
+    </select>
+
+
+
+
+
+
+</mapper>

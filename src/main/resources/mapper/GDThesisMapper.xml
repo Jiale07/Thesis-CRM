@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.GDThesisMapper">
+    <select id="findGDThesisSubmittedTableVOPage" resultType="com.jiale.thesis.entity.GD.vo.GDThesisSubmittedTableVO">
+        SELECT
+            gdthesis.id,
+            si.id,
+            si.student_name,
+            gdthesis.thesis_topic_id,
+            gdtc.category_name
+        FROM
+            graduation_design_thesis gdthesis
+                INNER JOIN student_info si ON gdthesis.student_id = si.id
+                INNER JOIN graduation_design_topic_property gdtopic_property ON gdtopic_property.topic_id = gdthesis.thesis_topic_id
+                INNER JOIN graduation_design_topic_category gdtc ON gdtopic_property.category_id = gdtc.id
+        WHERE
+            gdthesis.is_deleted = 0
+          AND gdthesis.is_submit = 1
+          AND gdthesis.student_id IN ( SELECT student_id FROM graduation_design_team_member gdtm WHERE gdtm.team_id = #{teamId} )
+    </select>
+
+<!--   student 查看论文提交记录-->
+    <select id="findThesisSubmitTheRecordVOPage" resultType="com.jiale.thesis.entity.GD.vo.ThesisSubmitTheRecordVO">
+        SELECT
+            gdthesis.id thesisId,
+            fi.file_name_old fileName,
+            gdthesis.create_time submitTime,
+            `asc`.audit_status_name auditStatusName
+        FROM
+            graduation_design_thesis gdthesis
+                INNER JOIN graduation_design_topic_final gdtf ON gdthesis.topic_final_id = gdtf.id
+                LEFT JOIN file_info fi ON gdthesis.accessory_file_id = fi.id
+                LEFT JOIN graduation_design_thesis_audit_record gdtar ON gdthesis.id = gdtar.gdthesis_id
+                LEFT JOIN audit_status_category `asc` ON gdtar.audit_status_id = `asc`.id
+        WHERE
+            gdthesis.is_deleted = 0
+          AND gdtf.student_id = #{studentId}
+    </select>
+<!--    查看论文基础信息-->
+    <select id="findThesisBasicInformationVOByStudentId" resultType="com.jiale.thesis.entity.GD.vo.ThesisBasicInformationVO">
+        SELECT
+            si.id studentId,
+            si.student_name studentName,
+            c.college_name collegeName,
+            m.major_name majorName,
+            ti.id teacherId,
+            ti.teacher_name teacherName,
+            gdtf.id thesisTopicId,
+            gdtf.thesis_topic_name thesisTopicName,
+            gdtc.category_name thesisTopicCategoryName
+        FROM
+            graduation_design_topic_final gdtf INNER JOIN student_info si ON gdtf.student_id = si.id
+                                               INNER JOIN college c ON si.college_id = c.id
+                                               INNER JOIN major m ON si.major_id = m.id
+                                               INNER JOIN graduation_design_topic_category gdtc ON gdtf.topic_category_id = gdtc.id
+                                               INNER JOIN graduation_design_team_member gdtm ON gdtm.student_id = gdtf.student_id
+                                               INNER JOIN graduation_design_team gdt ON gdtm.team_id = gdt.id
+                                               INNER JOIN teacher_info ti ON gdt.teacher_id = ti.id
+        WHERE
+            gdtf.is_deleted = 0
+          AND gdtf.student_id = #{studentId}
+
+    </select>
+<!--    查看指定学生提交提交论文记录 返回对象GDThesis-->
+    <select id="findGDThesisByStudentIdList" resultType="com.jiale.thesis.entity.GD.GDThesis">
+        SELECT
+            gdtf.*
+        FROM
+            graduation_design_thesis gdt INNER JOIN graduation_design_topic_final gdtf ON gdt.topic_final_id = gdtf.id
+        WHERE
+            gdtf.is_deleted = 0
+            AND gdtf.student_id = #{studentId}
+    </select>
+    
+<!--查看小组成员论文提交记录，小组固定，学生可选-->
+    <select id="findThesisTableViewVO" resultType="com.jiale.thesis.entity.GD.vo.ThesisTableViewVO">
+        SELECT
+            gdtf.id thesisTopicId,
+            gdtf.thesis_topic_name thesisTopicName,
+            gdtc.category_name thesisTopicCategory,
+            si.id studentId,
+            si.student_name studentName
+        FROM
+            student_info si
+                LEFT JOIN graduation_design_topic_final gdtf ON gdtf.student_id = si.id
+                LEFT JOIN graduation_design_topic_category gdtc ON gdtc.id = gdtf.topic_category_id
+        WHERE
+            gdtf.is_deleted = 0
+            AND gdtf.student_id IN (
+                SELECT
+                    student_id
+                FROM
+                    graduation_design_team_member gdtm
+                WHERE
+                    gdtm.is_deleted = 0
+                    AND gdtm.team_id = #{teamId}
+            )
+    </select>
+    
+    <select id="CountTheNumberOfThesisSubmittedByStudentId" resultType="INTEGER">
+        SELECT
+            count(gdthesis.id)
+        FROM
+            graduation_design_topic_final gdtf
+            INNER JOIN graduation_design_thesis gdthesis ON gdtf.id = gdthesis.topic_final_id
+        WHERE
+            gdtf.is_deleted = 0
+            AND gdthesis.is_deleted = 0
+            AND gdtf.student_id = #{studentId}
+    </select>
+    
+    <select id="verifyThesisAuditIsApproved" resultType="INTEGER">
+        SELECT
+            count(1)
+        FROM
+            graduation_design_topic_final gdtf
+                INNER JOIN graduation_design_thesis gdthesis ON gdtf.id = gdthesis.topic_final_id
+                INNER JOIN graduation_design_thesis_audit_record gdtar ON gdthesis.id = gdtar.gdthesis_id
+                INNER JOIN audit_status_category ascategory ON gdtar.audit_status_id = ascategory.id
+        WHERE
+            gdthesis.is_deleted = 0
+            AND ascategory.audit_status_value = 1
+            AND gdtf.student_id = #{studentId}
+    </select>
+
+    <select id="findGDThesisOneByStudentId" resultType="com.jiale.thesis.entity.GD.GDThesis">
+        SELECT
+            gdthesis.id id,
+            gdthesis.topic_final_id topicFinalId,
+            gdthesis.accessory_file_id accessoryFileId,
+            gdthesis.create_time createTime,
+            gdthesis.update_time updateTime,
+            gdthesis.is_deleted isDeleted
+        FROM
+            graduation_design_topic_final gdtf
+                INNER JOIN graduation_design_thesis gdthesis ON gdtf.id = gdthesis.topic_final_id
+        WHERE
+            gdtf.student_id = #{studentId}
+            AND gdthesis.is_deleted = 0
+        ORDER BY gdthesis.create_time DESC
+        LIMIT 1
+    </select>
+
+    <select id="verityIsCanSubmitThesisFinal" resultType="INTEGER">
+        SELECT
+            asCategory.audit_status_value
+        FROM
+            graduation_design_topic_final gdtf
+                INNER JOIN graduation_design_thesis gdthesis ON gdtf.id = gdthesis.topic_final_id
+                INNER JOIN graduation_design_thesis_audit_record gdtar ON  gdtar.gdthesis_id = gdthesis.id
+                INNER JOIN audit_status_category asCategory ON gdtar.audit_status_id = asCategory.id
+        WHERE
+            gdtf.student_id = #{studentId}
+        ORDER BY gdthesis.create_time DESC
+            LIMIT 1
+    </select>
+</mapper>

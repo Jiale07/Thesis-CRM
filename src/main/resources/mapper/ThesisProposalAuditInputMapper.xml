@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.ThesisProposalAuditInputMapper">
+
+
+    <select id="findTHAIList" resultType="com.jiale.thesis.entity.ThesisProposal.ThesisProposalAuditInput">
+        SELECT
+            *
+        FROM
+            thesis_proposal_audit_input tpai
+        WHERE
+            tpai.is_deleted = 0
+            AND tpai.tp_id = #{thesisProposalId}
+    </select>
+
+    <select id="findTPAIByTPIdANDTeacherId" resultType="com.jiale.thesis.entity.ThesisProposal.ThesisProposalAuditInput">
+        SELECT
+            *
+        FROM
+            thesis_proposal_audit_input tpai
+        WHERE
+            tpai.is_deleted = 0
+            AND tpai.tp_id = #{thesisProposalId}
+            AND tpai.teacher_id = #{teacherId}
+    </select>
+
+    <select id="findTPAIObjectByTPIdAndRoleId" resultType="com.jiale.thesis.entity.ThesisProposal.ThesisProposalAuditInput">
+        SELECT
+            tpai.*
+        FROM
+            thesis_proposal_audit_input tpai
+                INNER JOIN thesis_proposal_audit_input_setting tpais ON tpai.tpai_setting_id = tpais.id
+        WHERE
+            tpais.is_deleted = 0
+          AND tpai.tp_id = #{thesisProposalId}
+          AND tpais.role_id = #{roleId}
+    </select>
+
+
+    <select id="findTPAIListByThesisProposalId" resultType="com.jiale.thesis.entity.AuditStatusCategory">
+        SELECT
+            audit_sc.*
+        FROM
+            thesis_proposal_audit_input tpai
+                INNER JOIN thesis_proposal_audit_input_setting tpais ON tpai.tpai_setting_id = tpais.id
+                INNER JOIN audit_status_category audit_sc ON audit_sc = tpai.audit_status_id
+        WHERE
+            tpais.is_deleted = 0
+          AND tpai.tp_id = #{thesisProposalId}
+    </select>
+
+</mapper>
