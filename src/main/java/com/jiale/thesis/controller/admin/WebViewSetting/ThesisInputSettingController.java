@@ -71,10 +71,10 @@ public class ThesisInputSettingController {
 
     @RequestMapping("/deletedThesisInputSetting")
     @ResponseBody
-    public Result deletedThesisInputSetting(Long GDTISId){
+    public Result deletedThesisInputSetting(Long id){
         Result result = new Result();
 
-        int isDeleted = service.deletedGDThesisInputSettingById(GDTISId);
+        int isDeleted = service.deletedGDThesisInputSettingById(id);
         if (isDeleted==1){
             result.setResultCode(200);
             result.setMessage("删除成功");
