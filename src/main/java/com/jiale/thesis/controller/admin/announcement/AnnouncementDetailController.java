@@ -2,15 +2,11 @@ package com.jiale.thesis.controller.admin.announcement;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jiale.thesis.entity.Announcement.Announcement;
-import com.jiale.thesis.entity.Announcement.AnnouncementCategory;
-import com.jiale.thesis.entity.Announcement.AnnouncementVisible;
+import com.jiale.thesis.entity.announcement.Announcement;
+import com.jiale.thesis.entity.announcement.AnnouncementVisible;
 import com.jiale.thesis.entity.SysRole;
-import com.jiale.thesis.entity.vo.UserRoleVO;
 import com.jiale.thesis.service.*;
 import com.jiale.thesis.util.Result;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import org.apache.ibatis.javassist.expr.NewArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,9 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")

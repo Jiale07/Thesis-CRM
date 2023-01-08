@@ -192,4 +192,8 @@ public class RoleController {
         }
         return newRoleIdMap;
     }
+
+//    public Result<List<String>> getPermissionList() {
+//
+//    }
 }

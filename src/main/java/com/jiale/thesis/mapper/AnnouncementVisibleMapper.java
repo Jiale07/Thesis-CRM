@@ -1,7 +1,7 @@
 package com.jiale.thesis.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jiale.thesis.entity.Announcement.AnnouncementVisible;
+import com.jiale.thesis.entity.announcement.AnnouncementVisible;
 import com.jiale.thesis.entity.SysRole;
 import org.apache.ibatis.annotations.Mapper;
 

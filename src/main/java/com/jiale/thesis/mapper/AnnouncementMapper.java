@@ -1,10 +1,9 @@
 package com.jiale.thesis.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jiale.thesis.entity.Announcement.Announcement;
+import com.jiale.thesis.entity.announcement.Announcement;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.math.BigInteger;
 import java.util.List;
 
 @Mapper

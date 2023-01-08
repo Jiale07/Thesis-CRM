@@ -1,7 +1,7 @@
 package com.jiale.thesis.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.jiale.thesis.entity.Announcement.Announcement;
+import com.jiale.thesis.entity.announcement.Announcement;
 
 import java.util.List;
 

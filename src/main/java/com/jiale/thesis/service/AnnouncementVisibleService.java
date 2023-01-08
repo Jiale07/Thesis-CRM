@@ -1,6 +1,6 @@
 package com.jiale.thesis.service;
 
-import com.jiale.thesis.entity.Announcement.AnnouncementVisible;
+import com.jiale.thesis.entity.announcement.AnnouncementVisible;
 import com.jiale.thesis.entity.SysRole;
 
 import java.util.List;

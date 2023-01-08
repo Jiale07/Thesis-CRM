@@ -19,29 +19,28 @@ import java.util.Date;
 import java.util.Map;
 
 public class LoginInterceptor implements HandlerInterceptor {
-
-
     public static final String SECRET = "JKKLJOoasdlfj";
-
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
     JsonUtil jsonUtil = new JsonUtil();
     InterceptorResult interceptorResult = new InterceptorResult();
 
     @Override
-    public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1,Object arg2, Exception arg3) throws Exception{
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse arg1,Object arg2, Exception arg3) throws Exception{
 
     }
 
     @Override
-    public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, ModelAndView arg3)
+    public void postHandle(HttpServletRequest request, HttpServletResponse arg1, Object arg2, ModelAndView arg3)
             throws Exception {
 //        System.out.println(arg1.getHeader("token"));
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest arg0, HttpServletResponse arg1,Object arg2) throws Exception{
-        String headerToken = arg0.getHeader("token");
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse arg1,Object arg2) throws Exception{
+        StringBuffer url = request.getRequestURL();
+        System.out.println("url");
+        System.out.println(url);
+        String headerToken = request.getHeader("token");
         if (null == headerToken || headerToken.trim().equals("")){
             interceptorResult.interceptorResult(arg1,"无token，请重新登录",500);
             return false;

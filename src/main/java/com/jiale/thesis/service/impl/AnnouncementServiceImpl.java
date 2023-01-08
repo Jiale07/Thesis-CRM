@@ -2,7 +2,7 @@ package com.jiale.thesis.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.jiale.thesis.entity.Announcement.Announcement;
+import com.jiale.thesis.entity.announcement.Announcement;
 import com.jiale.thesis.mapper.AnnouncementMapper;
 import com.jiale.thesis.service.AnnouncementService;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jiale.thesis.mapper.AnnouncementMapper">
-    <resultMap id="BaseAnnouncementMap" type="com.jiale.thesis.entity.Announcement.Announcement">
+    <resultMap id="BaseAnnouncementMap" type="com.jiale.thesis.entity.announcement.Announcement">
         <id property="id" column="Announcement_id"/>
         <result property="creatorId" column="Announcement_creatorId"/>
         <result property="categoryId" column="Announcement_categoryId"/>

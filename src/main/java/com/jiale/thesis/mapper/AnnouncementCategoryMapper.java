@@ -2,7 +2,7 @@ package com.jiale.thesis.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-import com.jiale.thesis.entity.Announcement.AnnouncementCategory;
+import com.jiale.thesis.entity.announcement.AnnouncementCategory;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

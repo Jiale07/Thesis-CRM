@@ -3,9 +3,7 @@ package com.jiale.thesis.controller.admin.announcement;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.jiale.thesis.entity.Announcement.Announcement;
-import com.jiale.thesis.entity.Announcement.AnnouncementVisible;
-import com.jiale.thesis.entity.SysRole;
+import com.jiale.thesis.entity.announcement.Announcement;
 import com.jiale.thesis.service.AnnouncementService;
 import com.jiale.thesis.service.AnnouncementVisibleService;
 import com.jiale.thesis.service.SysRoleService;
@@ -19,8 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URLDecoder;
-import java.util.Arrays;
-import java.util.List;
 
 @RequestMapping("/admin")
 @Controller

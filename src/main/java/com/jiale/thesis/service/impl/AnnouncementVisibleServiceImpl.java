@@ -1,11 +1,10 @@
 package com.jiale.thesis.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.jiale.thesis.entity.Announcement.AnnouncementVisible;
+import com.jiale.thesis.entity.announcement.AnnouncementVisible;
 import com.jiale.thesis.entity.SysRole;
 import com.jiale.thesis.mapper.AnnouncementVisibleMapper;
 import com.jiale.thesis.service.AnnouncementVisibleService;
-import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

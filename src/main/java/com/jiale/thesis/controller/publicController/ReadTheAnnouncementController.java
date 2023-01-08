@@ -1,9 +1,7 @@
 package com.jiale.thesis.controller.publicController;
 
-import com.jiale.thesis.entity.Announcement.Announcement;
-import com.jiale.thesis.entity.Announcement.AnnouncementCategory;
-import com.jiale.thesis.entity.SysRole;
-import com.jiale.thesis.entity.SysUserRole;
+import com.jiale.thesis.entity.announcement.Announcement;
+import com.jiale.thesis.entity.announcement.AnnouncementCategory;
 import com.jiale.thesis.entity.vo.UserRoleVO;
 import com.jiale.thesis.service.*;
 import com.jiale.thesis.util.Result;

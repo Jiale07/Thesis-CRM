@@ -2,7 +2,7 @@ package com.jiale.thesis.controller.admin.announcement;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-import com.jiale.thesis.entity.Announcement.AnnouncementCategory;
+import com.jiale.thesis.entity.announcement.AnnouncementCategory;
 import com.jiale.thesis.service.AnnouncementCategoryService;
 import com.jiale.thesis.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;

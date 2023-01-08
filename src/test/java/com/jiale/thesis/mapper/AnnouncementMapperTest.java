@@ -1,6 +1,6 @@
 package com.jiale.thesis.mapper;
 
-import com.jiale.thesis.entity.Announcement.Announcement;
+import com.jiale.thesis.entity.announcement.Announcement;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -8,8 +8,6 @@ import javax.annotation.Resource;
 
 import java.math.BigInteger;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class AnnouncementMapperTest {

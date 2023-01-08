@@ -3,7 +3,7 @@ package com.jiale.thesis.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-import com.jiale.thesis.entity.Announcement.AnnouncementCategory;
+import com.jiale.thesis.entity.announcement.AnnouncementCategory;
 import com.jiale.thesis.mapper.AnnouncementCategoryMapper;
 import com.jiale.thesis.service.AnnouncementCategoryService;
 import org.springframework.stereotype.Service;

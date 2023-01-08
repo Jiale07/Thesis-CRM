@@ -1,4 +1,4 @@
-package com.jiale.thesis.entity.Announcement.VO;
+package com.jiale.thesis.entity.announcement.VO;
 
 import lombok.Data;
 
