@@ -7,9 +7,9 @@ spring:
     name: thesis
 
   datasource:
-    username: root
+    username: jiale_desktop
     password: 123456
-    url: jdbc:mysql://localhost:3306/thesis_db?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true
+    url: jdbc:mysql://192.168.31.137:3306/thesis_db?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true
     driver-class-name: com.mysql.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
     # hikari 连接池  https://blog.csdn.net/X5fnncxzq4/article/details/80649679

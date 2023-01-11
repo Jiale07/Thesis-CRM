@@ -2,11 +2,13 @@ package com.jiale.thesis.publicConstant;
 
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import java.util.HashMap;
 import java.util.Map;
 
+//@Configuration(value="RoleMap", proxyBeanMethods = true)
 public class RoleConstant {
     // 接口-权限控制：
 
