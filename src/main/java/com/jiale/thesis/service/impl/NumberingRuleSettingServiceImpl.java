@@ -1,5 +1,7 @@
 package com.jiale.thesis.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jiale.thesis.entity.numberingRuleSetting.NumberingRuleEntity;
 import com.jiale.thesis.mapper.NumberingRuleSettingMapper;
@@ -8,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
+
+import static com.jiale.thesis.publicConstant.NumberingRuleSettingConstant.ParagraphType;
 
 @Service
 public class NumberingRuleSettingServiceImpl implements NumberingRuleSettingService {
@@ -29,7 +34,7 @@ public class NumberingRuleSettingServiceImpl implements NumberingRuleSettingServ
 
     @Override
     public List<NumberingRuleEntity> selectNumberingRuleList(Integer numberingRuleType) {
-        QueryWrapper<NumberingRuleEntity>  queryWrapper = new QueryWrapper<>();
+        QueryWrapper<NumberingRuleEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("type", numberingRuleType);
         queryWrapper.eq("is_deleted", 0);
         return numberingRuleSettingMapper.selectList(queryWrapper);
@@ -51,5 +56,26 @@ public class NumberingRuleSettingServiceImpl implements NumberingRuleSettingServ
 //        queryWrapper.eq("id", numberingRuleEntity.getId());
 //        queryWrapper.eq("is_deleted", 0);
         return numberingRuleSettingMapper.updateById(numberingRuleEntity);
-    };
+    }
+
+    @Override
+    public String generatingNumberBy(Long id) {
+        NumberingRuleEntity numberingRule = numberingRuleSettingMapper.selectById(id);
+        if (numberingRule != null) {
+            String content = numberingRule.getContent();
+            JSONArray jsonArray = JSONArray.parseArray(content);
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject object = jsonArray.getJSONObject(i);
+                Integer paragraphType = object.getInteger("paragraphType");
+                if (paragraphType != null) {
+                    if (Objects.equals(ParagraphType.get("Data"), paragraphType)) {
+
+                    } else if (Objects.equals(ParagraphType.get("College"), paragraphType)) {
+
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }

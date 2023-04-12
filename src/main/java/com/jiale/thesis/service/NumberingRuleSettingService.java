@@ -9,6 +9,7 @@ public interface NumberingRuleSettingService {
     public NumberingRuleEntity selectNumberingRule(Long id);
     public List<NumberingRuleEntity> selectNumberingRuleList(Integer numberingRuleType);
     public int deletedNumberingRule(Long id);
-
     public int updateNumberingRule(NumberingRuleEntity numberingRuleEntity);
+    public String generatingNumberBy(Long id);
+
 }

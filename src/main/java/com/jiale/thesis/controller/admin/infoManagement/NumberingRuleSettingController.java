@@ -100,7 +100,6 @@ public class NumberingRuleSettingController {
     @RequestMapping("/deletedNumberingRuleById")
     @ResponseBody
     public Result<Object> deletedNumberingRuleById(Long id) {
-        System.out.println(id);
         Result<Object> result = new Result<>();
         int isSuccess = numberingRuleSettingService.deletedNumberingRule(id);
         if (isSuccess == 1) {
