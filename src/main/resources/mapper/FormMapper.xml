@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiale.thesis.mapper.customFormMapper.FormMapper">
+    <resultMap id="BaseFormCompleteResultMap" type="com.jiale.thesis.entity.customForm.vo.FormCompleteEntity">
+        <id property="formId" column="fromId"/>
+        <result property="formName" column="formName"/>
+        <result property="formTypeId" column="formTypeId"/>
+        <result property="formTypeName" column="formTypeName"/>
+        <collection property="formComponentList" ofType="com.jiale.thesis.entity.customForm.vo.FormComponentVO">
+            <id property="formComponentId" column="formComponentId"/>
+            <result property="componentKey" column="componentKey"/>
+            <result property="componentLabel" column="componentLabel"/>
+            <result property="serialNumber" column="componentSerialNumber"/>
+            <collection property="formComponentConfigList" ofType="com.jiale.thesis.entity.customForm.vo.FormComponentConfigVO">
+                <id property="formComponentConfigId" column="formComponentConfigId"/>
+                <result property="propertyKey" column="formComponentConfigKey"/>
+                <result property="value" column="formComponentConfigValue"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+
+    <select id="selectFormComplete" resultMap="BaseFormCompleteResultMap">
+        SELECT
+        f.id fromId,
+        f.NAME formName,
+        ft.id formTypeId,
+        ft.`name` formTypeName,
+        fc.id formComponentId,
+        fc.component_key componentKey,
+        fc.component_label componentLabel,
+        fc.serial_number componentSerialNumber,
+        fcc.id formComponentConfigId,
+        fcc.property_key formComponentConfigKey,
+        fcc.`value` formComponentConfigValue
+        FROM
+        `form` f
+        LEFT OUTER JOIN `form_component` fc ON f.id = fc.form_id AND fc.is_deleted = 0
+        LEFT OUTER JOIN `form_component_config` fcc ON fc.id = fcc.form_component_id AND (fcc.is_deleted = 0 OR fcc.is_deleted IS NULL)
+        LEFT OUTER JOIN `form_type` ft ON f.form_type_id = ft.id
+        WHERE
+        f.is_deleted = 0
+        <if test="formId != null and formId != ''">
+            AND f.id = #{formId}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,9 @@
+# Ignore target directory
+/target/
+
+# Ignore IDE files
+.idea/
+.vscode/
+
+# Ignore log files
+*.log

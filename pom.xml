@@ -108,11 +108,17 @@
     <!--    该插件可以将引用打包成一个可执行的jar包-->
     <build>
         <resources>
+<!--            <resource>-->
+<!--                <directory>src/main/java</directory>-->
+<!--                <includes>-->
+<!--                    <include>**/*.xml</include>-->
+<!--                    <include>**/*.yml</include>-->
+<!--                </includes>-->
+<!--            </resource>-->
             <resource>
-                <directory>src/main/java</directory>
+                <directory>src/main/resources</directory>
                 <includes>
                     <include>**/*.xml</include>
-                    <include>**/*.yml</include>
                 </includes>
             </resource>
         </resources>
