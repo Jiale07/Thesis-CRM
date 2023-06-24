@@ -2,6 +2,7 @@ package com.jiale.thesis.controller.customForm;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jiale.thesis.entity.customForm.FormComponentConfigEntity;
 import com.jiale.thesis.entity.customForm.FormComponentEntity;
 import com.jiale.thesis.entity.customForm.FormEntity;
@@ -41,8 +42,8 @@ public class FormController {
      */
     @RequestMapping("/postCreateForm")
     @ResponseBody
-    public Result createForm(@RequestBody String json) throws UnsupportedEncodingException {
-        Result result = new Result();
+    public Result<Object> createForm(@RequestBody String json) throws UnsupportedEncodingException {
+        Result<Object> result = new Result<>();
         String deUrl = URLDecoder.decode(json, "UTF-8");
         JSONObject obj = JSONObject.parseObject(deUrl);
         String formName = String.valueOf(obj.get("formName"));
@@ -128,18 +129,32 @@ public class FormController {
         return result;
     }
 
-    @RequestMapping("/selectForm")
+    @RequestMapping("/selectFormObject")
     @ResponseBody
-    public Result<List<FormEntity>> selectForm(Long id) {
-        Result<List<FormEntity>> result = new Result<>();
+    public Result<FormEntity> selectFormObject(Long id) {
+        Result<FormEntity> result = new Result<>();
         if (id == null) {
-            result.setData(formService.selectForm());
+            result.setMessage("参数错误");
+            result.setResultCode(500);
         } else {
-            List<FormEntity> list = new ArrayList<>();
-            list.add(formService.selectForm(id));
-            result.setData(list);
+            result.setData(formService.selectForm(id));
+            result.setResultCode(200);
         }
-        result.setResultCode(200);
+        return result;
+    }
+
+    @RequestMapping("/selectFormPage")
+    @ResponseBody
+    public Result<Page<FormEntity>> selectFormPage(Integer currentPage, Integer pageSize) {
+        Result<Page<FormEntity>> result = new Result<>();
+        if (currentPage == null || pageSize == null) {
+            result.setMessage("参数错误");
+            result.setResultCode(500);
+        } else {
+            Page<FormEntity> page = new Page<>(currentPage, pageSize);
+            result.setData(formService.selectForm(page));
+            result.setResultCode(200);
+        }
         return result;
     }
 
@@ -155,8 +170,8 @@ public class FormController {
 
     @RequestMapping("/postUpdateForm")
     @ResponseBody
-    public Result updateForm(@RequestBody String json) throws UnsupportedEncodingException {
-        Result result = new Result();
+    public Result<Object> updateForm(@RequestBody String json) throws UnsupportedEncodingException {
+        Result<Object> result = new Result<>();
         String deUrl = URLDecoder.decode(json, "UTF-8");
         JSONObject obj = JSONObject.parseObject(deUrl);
         // 更新流程

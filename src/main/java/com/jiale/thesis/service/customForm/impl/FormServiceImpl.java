@@ -6,6 +6,7 @@ import com.jiale.thesis.entity.customForm.vo.FormCompleteEntity;
 import com.jiale.thesis.mapper.customFormMapper.FormMapper;
 import com.jiale.thesis.service.customForm.FormService;
 import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -39,10 +40,10 @@ public class FormServiceImpl implements FormService {
     }
 
     @Override
-    public List<FormEntity> selectForm() {
+    public Page<FormEntity> selectForm(Page<FormEntity> page) {
         QueryWrapper<FormEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("is_deleted", 0);
-        return formMapper.selectList(queryWrapper);
+        return formMapper.selectPage(page, queryWrapper);
     }
 
     @Override

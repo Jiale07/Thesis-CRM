@@ -1,5 +1,6 @@
 package com.jiale.thesis.service.customForm;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jiale.thesis.entity.customForm.FormEntity;
 import com.jiale.thesis.entity.customForm.vo.FormCompleteEntity;
 
@@ -13,7 +14,7 @@ public interface FormService {
 
     FormEntity selectForm(Long id);
 
-    List<FormEntity> selectForm();
+    Page<FormEntity> selectForm(Page<FormEntity> page);
 
     int updateForm(FormEntity formEntity);
 
