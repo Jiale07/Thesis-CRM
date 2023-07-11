@@ -13,5 +13,7 @@ import lombok.EqualsAndHashCode;
 public class FormEntity extends BaseEntityClass {
     private String name;
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long formTypeId;
+    private Long authorId;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long formTemplateId;
 }

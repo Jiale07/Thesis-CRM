@@ -2,17 +2,19 @@ package com.jiale.thesis.entity.customForm.vo;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.jiale.thesis.entity.customForm.FormInfoEntity;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class FormCompleteEntity {
+public class FormVO {
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long formId;
-    private String formName;
+    private Long id;
+    private String name;
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long formTypeId;
-    private String formTypeName;
-    private List<FormComponentVO> formComponentList;
+    private Long authorId;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long formTemplateId;
+    List<FormInfoEntity> formInfoList;
 }

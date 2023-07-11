@@ -26,9 +26,9 @@ public class FormComponentServiceImpl implements FormComponentService {
     }
 
     @Override
-    public List<FormComponentEntity> selectByFormId(Long formId) {
+    public List<FormComponentEntity> selectByFormId(Long formTemplateId) {
         QueryWrapper<FormComponentEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("form_id", formId);
+        queryWrapper.eq("form_template_id", formTemplateId);
         queryWrapper.eq("is_deleted", 0);
         return formComponentMapper.selectList(queryWrapper);
     }

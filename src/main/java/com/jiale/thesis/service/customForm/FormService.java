@@ -1,26 +1,16 @@
 package com.jiale.thesis.service.customForm;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jiale.thesis.entity.customForm.FormEntity;
-import com.jiale.thesis.entity.customForm.vo.FormCompleteEntity;
-
-import java.util.List;
+import com.jiale.thesis.entity.customForm.vo.FormVO;
 
 public interface FormService {
+    int createForm(FormEntity form);
+    int deleteForm(Long formId);
+    int updateForm(FormEntity form);
 
-    int createForm(FormEntity formEntity);
+    FormEntity selectForm(Long formId, Long authorId);
+    FormVO selectFormVO(Long formId);
+    FormVO selectFormVO(Long formTemplateId, Long authorId);
 
-    int logicallyDelete(Long id);
-
-    FormEntity selectForm(Long id);
-
-    Page<FormEntity> selectForm(Page<FormEntity> page);
-
-    int updateForm(FormEntity formEntity);
-
-    int deleteForm(Long id);
-
-    int countFormByFormTypeId(Long id);
-
-    List<FormCompleteEntity> selectFormComplete(Long formId);
+    int formCount(Long formTemplateId, Long authorId);
 }

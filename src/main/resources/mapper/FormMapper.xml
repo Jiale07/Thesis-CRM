@@ -1,47 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jiale.thesis.mapper.customFormMapper.FormMapper">
-    <resultMap id="BaseFormCompleteResultMap" type="com.jiale.thesis.entity.customForm.vo.FormCompleteEntity">
-        <id property="formId" column="fromId"/>
-        <result property="formName" column="formName"/>
-        <result property="formTypeId" column="formTypeId"/>
-        <result property="formTypeName" column="formTypeName"/>
-        <collection property="formComponentList" ofType="com.jiale.thesis.entity.customForm.vo.FormComponentVO">
-            <id property="formComponentId" column="formComponentId"/>
-            <result property="componentKey" column="componentKey"/>
-            <result property="componentLabel" column="componentLabel"/>
-            <result property="serialNumber" column="componentSerialNumber"/>
-            <collection property="formComponentConfigList" ofType="com.jiale.thesis.entity.customForm.vo.FormComponentConfigVO">
-                <id property="formComponentConfigId" column="formComponentConfigId"/>
-                <result property="propertyKey" column="formComponentConfigKey"/>
-                <result property="value" column="formComponentConfigValue"/>
-            </collection>
+    <resultMap id="BaseFormVOResultMap" type="com.jiale.thesis.entity.customForm.vo.FormVO">
+        <id property="id" column="fId"/>
+        <result property="name" column="fName"/>
+        <result property="authorId" column="fAuthorId"/>
+        <result property="formTemplateId" column="fFormTemplateId"/>
+        <collection property="formInfoList" ofType="com.jiale.thesis.entity.customForm.FormInfoEntity">
+            <id property="id" column="FormInfo_Id"/>
+            <result property="formId" column="FormInfo_FormId"/>
+            <result property="formComponentId" column="FormInfo_FormComponentId"/>
+            <result property="value" column="FormInfo_Value"/>
         </collection>
     </resultMap>
 
-
-    <select id="selectFormComplete" resultMap="BaseFormCompleteResultMap">
+    <sql id="selectFormVO">
         SELECT
-        f.id fromId,
-        f.NAME formName,
-        ft.id formTypeId,
-        ft.`name` formTypeName,
-        fc.id formComponentId,
-        fc.component_key componentKey,
-        fc.component_label componentLabel,
-        fc.serial_number componentSerialNumber,
-        fcc.id formComponentConfigId,
-        fcc.property_key formComponentConfigKey,
-        fcc.`value` formComponentConfigValue
+            f.id fId,
+            f.name fName,
+            f.author_id fAuthorId,
+            f.form_template_id fFormTemplateId,
+            fi.id FormInfo_Id,
+            fi.form_id FormInfo_FormId,
+            fi.form_component_id FormInfo_FormComponentId,
+            fi.value FormInfo_Value
         FROM
-        `form` f
-        LEFT OUTER JOIN `form_component` fc ON f.id = fc.form_id AND fc.is_deleted = 0
-        LEFT OUTER JOIN `form_component_config` fcc ON fc.id = fcc.form_component_id AND (fcc.is_deleted = 0 OR fcc.is_deleted IS NULL)
-        LEFT OUTER JOIN `form_type` ft ON f.form_type_id = ft.id
+            form f
+                INNER JOIN form_info fi ON f.id = fi.form_id
+    </sql>
+    <select id="selectFormVO" resultMap="BaseFormVOResultMap">
+        <include refid="selectFormVO"/>
         WHERE
-        f.is_deleted = 0
+            f.is_deleted = 0
+        AND fi.is_deleted = 0
         <if test="formId != null and formId != ''">
-            AND f.id = #{formId}
+             f.id = #{formId}
         </if>
+    </select>
+
+    <select id="selectFormVOByTemplateId" resultMap="BaseFormVOResultMap">
+        <include refid="selectFormVO"/>
+        WHERE
+            f.is_deleted = 0
+        AND fi.is_deleted = 0
+        AND f.id = (
+            SELECT
+                id
+            FROM
+                form f
+            WHERE
+                f.form_template_id = ${formTemplateId}
+            AND f.author_id = ${authorId}
+            ORDER BY
+                f.create_time DESC
+            LIMIT 1
+        )
     </select>
 </mapper>

@@ -8,7 +8,7 @@ public interface FormComponentService {
 
     int insertFormComponent(List<FormComponentEntity> formComponentEntityList);
 
-    List<FormComponentEntity> selectByFormId(Long formId);
+    List<FormComponentEntity> selectByFormId(Long formTemplate);
 
     int updateFormComponentList(List<FormComponentEntity> list);
 

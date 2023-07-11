@@ -8,12 +8,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@TableName("form_component")
+@TableName("form_template")
 @EqualsAndHashCode(callSuper = true)
-public class FormComponentEntity extends BaseEntityClass {
+public class FormTemplateEntity extends BaseEntityClass {
+    private String name;
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long formTemplateId;
-    private String componentKey;
-    private Integer serialNumber;
-    private String componentLabel;
+    private Long formTypeId;
 }
