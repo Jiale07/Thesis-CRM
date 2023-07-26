@@ -1,5 +1,6 @@
 # Ignore target directory
 /target/
+/thesis-crm.iml
 
 # Ignore IDE files
 .idea/
