@@ -32,7 +32,7 @@ spring:
       pool-name: DemoHikariCP
 
   resources:
-    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path},file:${web.images-save-path},file:${web.other-save-path}
 
 
 mybatis-plus:
