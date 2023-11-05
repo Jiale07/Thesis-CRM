@@ -1,7 +1,7 @@
 web:
   upload-path: D:/upload/
-images-save-path: D:/upload/images/
-other-save-path: D:/upload/other/
+  images-save-path: D:/upload/images/
+  other-save-path: D:/upload/other/
 spring:
   application:
     name: thesis
