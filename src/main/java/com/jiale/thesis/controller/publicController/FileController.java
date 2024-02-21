@@ -24,8 +24,8 @@ import java.util.Date;
 public class FileController {
     private static final Logger logger = (Logger) LoggerFactory.getLogger(FileController.class);
     private static final String fileDir = "D:\\upload";
-    @Value("${images-save-path}")
-    private String fileSavePath;
+//    @Value("${images-save-path}")
+    private String fileSavePath = "D:/upload/images/";
     private static final String rootPath = fileDir+File.separator;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
 

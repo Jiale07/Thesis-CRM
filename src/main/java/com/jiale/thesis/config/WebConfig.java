@@ -13,8 +13,8 @@ public class WebConfig implements WebMvcConfigurer {
      * 图片保存路径，自动从yml文件中获取数据
      *   示例： E:/images/
      */
-    @Value("${images-save-path}")
-    private String fileSavePath;
+//    @Value("${images-save-path}")
+    private String fileSavePath = "D:/upload/images/";
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
